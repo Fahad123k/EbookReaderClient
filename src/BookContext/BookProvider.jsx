@@ -1,6 +1,5 @@
 import { createContext ,useState,useEffect} from "react";
 import axios from "axios";
-import BookData from "./Book"
 const BookContext= createContext();
 const BookProvider=({children})=>{
     const [books, setBooks] = useState([]);
@@ -13,33 +12,36 @@ const BookProvider=({children})=>{
     // console.log("currentPage=",currentPage);
 
 
-    const handleSearch = async() => {
-  
-      if(searchTerm!=null){
-      setLoading(true)
-      axios.get(`http://localhost:5555/ebooks/?search=${searchTerm}`)
-        .then((res) => {
-          if(res.status===404){
+    const handleSearch = async () => {
+      try {
+        if (searchTerm !== null) {
+          setLoading(true);
+    
+          const response = await axios.get(`http://localhost:5555/ebooks/?search=${searchTerm}`);
+          if(res.status==404){
             setNoMoreData(true)
           }
-          else{
-  
-            setBooks(res.data.eBooks);
-            setToatlPage(res.data.totalPage)
-            // console.log("ghjghghhfh",res.data)
+    
+          if (response.data.eBooks.length === 0) {
+            setNoMoreData(true);
+            setBooks([]); // Clear the books array or handle as needed
+            setToatlPage(0); // Update total page count or handle as needed
+          } else {
+            setBooks(response.data.eBooks);
+            setToatlPage(response.data.totalPage);
           }
-          setLoading(false)
-        })
-        .catch((err) => {
-          console.log("some error", err.message);
+    
           setLoading(false);
-        })
+        } else {
+          fetchBooks();
+        }
+      } catch (error) {
+        // setNoMoreData(true);
+        console.error("Error in handleSearch:", error.message);
+        setLoading(false);
       }
-      else{
-        fetchBooks()
-      }
-      
     };
+    
 
     const fetchBooks=()=>{
 

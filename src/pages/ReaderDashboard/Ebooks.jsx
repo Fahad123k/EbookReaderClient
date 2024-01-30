@@ -19,13 +19,9 @@ const Ebooks = () => {
 
   return (
     <div className='m-4'>
+      {noMoreData && <p className="text-red-500 mt-2">No results found.</p>}
       {!loading ? (
-        noMoreData ? (
-          <div>
-            No more data available <br />
-
-          </div>
-        ) : (
+         (
           <div>
             <div className="flex flex-col">
 

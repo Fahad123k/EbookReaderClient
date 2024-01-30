@@ -11,7 +11,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-800 p-4 fixed w-full shadow-sm border-black border-b z-0"  style={{ height: '62px' }}>
+    <nav className="bg-gray-800 p-4 fixed w-full shadow-sm border-black border-b z-50 fixed "  style={{ height: '62px' }}>
       <div className="container mx-auto flex justify-between items-center ">
         <Link to="/" className="flex items-center text-white text-2xl font-bold">
           <FaSwatchbook className="text-3xl mr-2 text-sky-500" />E.BookReader

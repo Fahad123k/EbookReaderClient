@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
@@ -6,6 +6,62 @@ import Spinner from '../../components/Spinner';
 import { useSnackbar } from 'notistack';
 
 export const CreateBook = () => {
+
+  const genres = ["Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Film Noir", "History", "Horror", "Music", "Musical", "Mystery", "Romance", "Sci-Fi", "Sport", "Thriller", "War", "Western"];
+  const Languages = [
+    "Mandarin Chinese",
+    "Spanish",
+    "English",
+    "Hindi",
+    "Arabic",
+    "Bengali",
+    "Portuguese",
+    "Russian",
+    "Urdu",
+    "Indonesian",
+    "French",
+    "German",
+    "Japanese",
+    "Swahili",
+    "Marathi",
+    "Telugu",
+    "Wu (Shanghainese)",
+    "Turkish",
+    "Tamil",
+    "Vietnamese",
+    "Yue (Cantonese)",
+    "Thai",
+    "Gujarati",
+    "Jin",
+    "Filipino",
+    "Persian",
+    "Polish",
+    "Yoruba",
+    "Maithili",
+    "Ukrainian",
+    "Italian",
+    "Malayalam",
+    "Burmese",
+    "Bhojpuri",
+    "Tagalog",
+    "Uzbek",
+    "Sindhi",
+    "Amharic",
+    "Farsi (Dari)",
+    "Romanian",
+    "Odia",
+    "Malay",
+    "Dutch",
+    "Nepali",
+    "Assamese",
+    "Sinhalese",
+    "Thai",
+    "Serbo-Croatian",
+    "Kurdish",
+    "Nigerian Pidgin English"
+  ];
+
+
 
   const [eBookData, setEbookData] = useState({
     title: '',
@@ -18,6 +74,7 @@ export const CreateBook = () => {
     publisher: '',
     language: '',
     pages: '',
+    coverImageUrl:''
   })
 
   const [loading, setLoading] = useState(false);
@@ -25,12 +82,21 @@ export const CreateBook = () => {
   const { enqueueSnackbar } = useSnackbar();
 
 
-  const handleInput = (e) => {
-    const { name, value } = e.target;
-    setEbookData({...eBookData,[name]:value})
-  }
+const handleInput = (e) => {
+  // e.preventDefault();
+  const { name, value, type, files } = e.target;
+  // const newValue = type === 'file' ? files[0] : value;
+  setEbookData(prevData=>({ ...prevData, [name]: type === 'file' ? files[0] : value }));
+  // console.log("book data", eBookData);
 
-  console.log(eBookData.title)
+}
+
+useEffect(() => {
+  console.log("book data", eBookData);
+}, [eBookData]);
+
+
+ 
   const handleSaveBook = () => {
     setLoading(true);
     axios
@@ -102,7 +168,7 @@ export const CreateBook = () => {
             className='border-2 border-gray-500 px-4 py-2 w-full'
           />
         </div>
-      
+
         <div className='my-4'>
           <label htmlFor='' className='text-xl mr-4 text-gray-500'>
             Rating
@@ -115,7 +181,7 @@ export const CreateBook = () => {
             className='border-2 border-gray-500 px-4 py-2 w-full'
           />
         </div>
-      
+
         <div className='my-4'>
           <label htmlFor='' className='text-xl mr-4 text-gray-500'>
             ISBNs
@@ -133,13 +199,18 @@ export const CreateBook = () => {
           <label htmlFor='' className='text-xl mr-4 text-gray-500'>
             Genre
           </label>
-          <input
-            type='text'
+   
+
+          <select
             value={eBookData.genre}
             name="genre"
             onChange={handleInput}
-          className='border-2 border-gray-500 px-4 py-2 w-full'
-          />
+            className='border-2 border-gray-500 px-4 py-2 w-full'>
+            <option value="" disabled>Select Genere</option>
+            {genres.map((genre) => (
+              <option key={genre} value={genre}>{genre}</option>
+            ))}
+          </select>
         </div>
         {/* Publisher */}
         <div className='my-4'>
@@ -150,8 +221,8 @@ export const CreateBook = () => {
             type='text'
             name='publisher'
             value={eBookData.publisher}
-            onChange={handleInput }
-          className='border-2 border-gray-500 px-4 py-2 w-full'
+            onChange={handleInput}
+            className='border-2 border-gray-500 px-4 py-2 w-full'
           />
         </div>
         {/* Language */}
@@ -159,13 +230,19 @@ export const CreateBook = () => {
           <label htmlFor='' className='text-xl mr-4 text-gray-500'>
             Language
           </label>
-          <input
-            type='text'
+          <select
+
             name='language'
             value={eBookData.language}
             onChange={handleInput}
-          className='border-2 border-gray-500 px-4 py-2 w-full'
-          />
+            className='border-2 border-gray-500 px-4 py-2 w-full'
+          >
+            <option value='' disabled>Select Language</option>
+            {Languages.map((language,index) => (
+              <option key={`${language}-${index}`} value={language}>{language}</option>
+            ))}
+          </select>
+
         </div>
         {/* Pages */}
         <div className='my-4'>
@@ -177,9 +254,21 @@ export const CreateBook = () => {
             name='pages'
             value={eBookData.pages}
             onChange={handleInput}
-          className='border-2 border-gray-500 px-4 py-2 w-full'
+            className='border-2 border-gray-500 px-4 py-2 w-full'
           />
         </div>
+        <div className='my-4'>
+      <label htmlFor='' className='text-xl mr-4 text-gray-500'>
+        Cover Image
+      </label>
+      <input
+        type='file'
+        name='image'
+       
+        onChange={handleInput}
+        className='border-2 border-gray-500 px-4 py-2 w-full'
+      />
+    </div>
         <button className='p-2 bg-sky-300 m-8' onClick={handleSaveBook}>
           Save
         </button>
